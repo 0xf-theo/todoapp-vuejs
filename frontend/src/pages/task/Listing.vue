@@ -5,7 +5,8 @@
     <!-- Task Filtering -->
     <div>
       <label>Status:</label>
-      <select v-model="selectedStatus"> <!--style="{{ margin-right: 20px; margin-bottom: 10px;}}"-->
+      <select v-model="selectedStatus">
+        <!--style="{{ margin-right: 20px; margin-bottom: 10px;}}"-->
         <option value="">All</option>
         <option value="to do">To Do</option>
         <option value="progress">In Progress</option>
@@ -71,15 +72,15 @@
               <select
                 v-model="task.status"
                 v-if="
-                  task.status === 'to do' ||
-                  task.status === 'progress' ||
+                  task.status === 'todo' ||
+                  task.status === 'in-progress' ||
                   task.status === 'completed' ||
                   task.status === 'pending'
                 "
                 @change="changeStatus(task)"
               >
-                <option value="to do">To Do</option>
-                <option value="progress">In Progress</option>
+                <option value="todo">To Do</option>
+                <option value="in-progress">In Progress</option>
                 <option value="completed">Completed</option>
                 <option value="pending">Pending</option>
               </select>
@@ -254,7 +255,6 @@ export default {
 
       console.log("filtered", this.filteredTasks);
 
-
       return filtered;
     },
   },
@@ -304,6 +304,22 @@ export default {
 
     changeStatus(task) {
       console.log("Change status of task:", task);
+      axios
+       .put(`http://localhost:8081/api/task/${task._id}`, {
+        status: task.status,
+        title: task.title,
+        description: task.description,
+        priority: task.priority,
+        subtasks: task.subtasks,
+        dueDate: task.dueDate
+       })
+        .then((response) => {})
+        .catch((error) => {
+          console.error("API Error:", error);
+        })
+        .finally(() => {
+          this.saveLoader = false;
+        });
     },
 
     searchUsers(searchQuery) {

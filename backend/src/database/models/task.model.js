@@ -33,7 +33,7 @@ const schema = new Schema(
     status: {
       type: String,
       required: false,
-      enum: ["pending", "in-progress", "completed"],
+      enum: ["todo", "pending", "in-progress", "completed"],
       default: "pending",
     },
   },

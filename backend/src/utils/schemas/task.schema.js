@@ -14,7 +14,8 @@ const taskSchema = joi.object({
   createdBy: joi.string(),
   description: joi.string().max(500).required(),
   dueDate: joi.date().greater("now").required(),
-  // subtasks: joi.array().items(joi.string()).required(),
+  status: joi.string(),
+  subtasks: joi.array().items(joi.string()).required(),
 });
 
 module.exports = taskSchema;

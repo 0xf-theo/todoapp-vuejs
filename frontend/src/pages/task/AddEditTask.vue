@@ -57,6 +57,20 @@
           </select>
         </div>
 
+        <div v-if="inEditMode">
+          <label for="status" class="block text-gray-700 font-medium mb-2"
+            >Status:</label
+          >
+          <select
+                v-model="task.status"
+              >
+                <option value="todo">To Do</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+              </select>
+        </div>
+
         <!-- Submit Button -->
         <div>
           <button
@@ -82,6 +96,8 @@ export default {
         description: "",
         dueDate: "",
         priority: "",
+        status: "",
+        subtasks: []
       },
       getLoader: false,
       saveLoader: false,
@@ -113,6 +129,8 @@ export default {
             this.task.description = resData.data.description;
             this.task.dueDate =  new Date(resData.data.dueDate).toISOString().split('T')[0];
             this.task.priority = resData.data.priority;
+            this.task.status = resData.data.status;
+            this.task.subtasks = resData.data.subtasks;
           } else {
           }
         })

@@ -108,6 +108,7 @@ const update = async (req, res, next) => {
     task.dueDate = req.body.dueDate;
     task.priority = req.body.priority;
     task.subtasks = req.body.subtasks;
+    task.status = req.body.status;
 
     await task.save();
 

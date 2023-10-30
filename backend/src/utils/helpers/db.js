@@ -5,10 +5,13 @@
 const mongoose = require("mongoose");
 
 const connectDB = () => {
-  mongoose.connect("mongodb://localhost:27017", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  mongoose.connect(
+    "mongodb+srv://theo:qAX838hR@cluster0.0d5f0s5.mongodb.net/",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  );
 
   const db = mongoose.connection;
 
