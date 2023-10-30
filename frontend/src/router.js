@@ -11,12 +11,26 @@ import Login from "./pages/auth/Login.vue";
 import AddEditTask from "./pages/task/AddEditTask.vue";
 import TaskListing from "./pages/task/Listing.vue";
 import Layout from "./components/layout/Layout.vue";
+import Register from "./pages/auth/Register.vue";
+
+function requireLoggedIn(to, from, next) {
+  var isAuthenticated = false;
+  if (localStorage.getItem("user")) isAuthenticated = true;
+  else isAuthenticated = false;
+  if (isAuthenticated) {
+    next(); // allow to enter route
+  } else {
+    next("/login"); // go to '/login';
+  }
+}
 
 const routes = [
   { path: "/login", component: Login },
+  { path: "/register", component: Register },
   {
     path: "/",
     component: Layout,
+    beforeEnter: requireLoggedIn,
     children: [
       { path: "task", component: TaskListing },
       { path: "task/add", component: AddEditTask },

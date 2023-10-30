@@ -6,7 +6,7 @@
       class="w-full p-6 m-auto bg-white border-t border-purple-600 rounded shadow-lg shadow-purple-800/50 lg:max-w-md"
     >
       <h1 class="text-3xl font-semibold text-center text-purple-700 pb-5">
-        Login
+        Register
       </h1>
 
       <form @submit.prevent="submitForm" class="space-y-4">
@@ -31,12 +31,26 @@
         </div>
         <div>
           <label for="title" class="block text-gray-700 font-medium mb-2"
+            >Username:</label
+          >
+          <input
+            type="text"
+            id="username"
+            v-model="username"
+            required
+            class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-purple-400 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label for="title" class="block text-gray-700 font-medium mb-2"
             >Email:</label
           >
           <input
             type="text"
             id="email"
             v-model="email"
+            required
             class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-purple-400 focus:outline-none"
           />
         </div>
@@ -49,6 +63,7 @@
             type="password"
             id="password"
             v-model="password"
+            required
             class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-purple-400 focus:outline-none"
           />
         </div>
@@ -58,7 +73,7 @@
             type="submit"
             class="w-full px-4 py-2 text-white bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600"
           >
-            Login
+            Register
           </button>
         </div>
       </form>
@@ -70,11 +85,7 @@
       </div>
 
       <div class="flex justify-center p-6">
-        <small
-          ><a href="/register"
-            >Don't have an account yet ? Register now</a
-          ></small
-        >
+        <small><a href="/login">Already have an account ? Login now</a></small>
       </div>
     </div>
   </div>
@@ -85,9 +96,10 @@ import axios from "../../api";
 import { decodeCredential } from "vue3-google-login";
 
 export default {
-  name: "Login",
+  name: "Register",
   data() {
     return {
+      username: "",
       email: "",
       password: "",
       error: "",
@@ -121,16 +133,15 @@ export default {
 
     submitForm() {
       axios
-        .post(`/api/auth/login`, {
+        .post(`/api/auth/register`, {
+          username: this.username,
           email: this.email,
           password: this.password,
         })
         .then((response) => {
           const resData = response.data;
           if (resData.user) {
-            localStorage.setItem("user", JSON.stringify(resData.user));
-            localStorage.setItem("token", resData.user.token);
-            this.$router.push("/");
+            this.$router.push("/login");
           } else {
             this.error = error.response.data.message;
           }

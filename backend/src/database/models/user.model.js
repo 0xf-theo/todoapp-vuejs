@@ -6,9 +6,24 @@ const { Schema } = mongoose;
 
 const schema = new Schema(
   {
-    name: {
+    picture: {
+      type: String,
+    },
+    username: {
       type: String,
       required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: ["local", "google"],
     },
   },
   { timestamps: true }

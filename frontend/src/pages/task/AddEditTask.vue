@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "../../api";
 
 export default {
   data() {
@@ -119,7 +119,7 @@ export default {
       this.getLoader = true;
 
       axios
-        .get(`http://localhost:8081/api/task/${this.$route.params.id}`)
+        .get(`/api/task/${this.$route.params.id}`)
         .then((response) => {
           const resData = response.data;
 
@@ -147,7 +147,7 @@ export default {
       if (this.inEditMode) {
         // Edit mode: Make a PUT request to update the task
         axios
-          .put(`http://localhost:8081/api/task/${this.$route.params.id}`, this.task)
+          .put(`/api/task/${this.$route.params.id}`, this.task)
           .then((response) => {
             const resData = response.data;
             if (resData.status) {
@@ -165,7 +165,7 @@ export default {
       } else {
         // Add mode: Make a POST request to create a new task
         axios
-          .post("http://localhost:8081/api/task", this.task)
+          .post("/api/task", this.task)
           .then((response) => {
             const resData = response.data;
             if (resData.status) {

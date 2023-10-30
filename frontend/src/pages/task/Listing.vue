@@ -212,7 +212,7 @@
 
 <script>
 // import Multiselect from "vue-multiselect";
-import axios from "axios";
+import axios from "../../api";
 
 export default {
   components: {
@@ -264,7 +264,7 @@ export default {
       this.getLoader = true;
 
       axios
-        .get(`http://localhost:8081/api/task`)
+        .get(`/api/task`)
         .then((response) => {
           const resData = response.data;
 
@@ -302,9 +302,9 @@ export default {
       console.log("Delete task:", id);
 
       axios
-        .delete(`http://localhost:8081/api/task/${id}`)
+        .delete(`/api/task/${id}`)
         .then((response) => {
-          this.fetchData()
+          this.fetchData();
         })
         .catch((error) => {
           console.error("API Error:", error);
@@ -314,14 +314,14 @@ export default {
     changeStatus(task) {
       console.log("Change status of task:", task);
       axios
-       .put(`http://localhost:8081/api/task/${task._id}`, {
-        status: task.status,
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        subtasks: task.subtasks,
-        dueDate: task.dueDate
-       })
+        .put(`/api/task/${task._id}`, {
+          status: task.status,
+          title: task.title,
+          description: task.description,
+          priority: task.priority,
+          subtasks: task.subtasks,
+          dueDate: task.dueDate,
+        })
         .then((response) => {})
         .catch((error) => {
           console.error("API Error:", error);

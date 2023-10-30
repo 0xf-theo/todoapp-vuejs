@@ -7,13 +7,14 @@
 
 const express = require("express");
 const taskController = require("../controllers/task.controller");
+const protect = require("../middleware/protect")
 
 const router = express.Router();
 
-router.get("/", taskController.listing);
-router.get("/:id", taskController.detail);
-router.post("/", taskController.create);
-router.put("/:id", taskController.update);
-router.delete("/:id", taskController.destroy);
+router.get("/", protect, taskController.listing);
+router.get("/:id", protect, taskController.detail);
+router.post("/", protect, taskController.create);
+router.put("/:id", protect, taskController.update);
+router.delete("/:id", protect, taskController.destroy);
 
 module.exports = router;
