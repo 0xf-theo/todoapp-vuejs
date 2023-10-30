@@ -1,3 +1,10 @@
+
+//gérer la navigation entre les différentes pages. Lorsque l'URL de la page change, 
+//le routeur associé à ce fichier redirige vers une route spécifique, 
+//ce qui détermine le composant qui sera affiché à l'utilisateur. 
+//Par exemple, lorsque je vais sur l'URL "/task", le composant "TaskListing" est automatiquement rendu dans la partie 
+//de la page réservée au contenu de mon application, qui est définie dans le composant "Layout".
+
 import { createRouter, createWebHistory } from "vue-router";
 
 import Login from "./pages/auth/Login.vue";
