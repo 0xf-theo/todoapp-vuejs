@@ -20,6 +20,8 @@
       <li class="mb-4">
         <router-link to="/task" class="block px-4 py-2">Your Tasks</router-link>
       </li>
+
+// pour l'historique, à regarder
       <!-- <li>
         <router-link to="/dashboard/tasks/history" class="block px-4 py-2"
           >Tasks History</router-link
