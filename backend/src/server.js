@@ -1,5 +1,8 @@
 "use strict";
 
+//configure un serveur web Node.js avec Express, définit des middlewares pour gérer les demandes, gère les erreurs, 
+//et écoute les demandes entrantes sur un port spécifié. Cela permet de créer une application web qui peut répondre aux requêtes HTTP
+
 require("dotenv").config();
 
 const express = require("express");
