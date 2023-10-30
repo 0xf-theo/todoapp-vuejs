@@ -6,6 +6,7 @@
 const validator = require("../../utils/helpers/validator");
 const { TaskModel } = require("../../database/models");
 const taskSchema = require("../../utils/schemas/task.schema");
+const { sendEmail } = require("../../utils/helpers/email");
 
 //Cette fonction gère la récupération des tâches. Elle prend en compte les filtres tels que la priorité et le statut
 //pour renvoyer une liste de tâches correspondant à ces critères.
@@ -169,6 +170,19 @@ const share = async (req, res, next) => {
     }
 
     task.shares.push(req.query.email);
+
+    sendEmail({
+      to: req.query.email,
+      subject: "New Task Shared with you !",
+      content: `
+      Hello, 
+      
+      ${req?.user?.username} shared a task with you !
+      The task is : ${task.title}
+
+      You can see it here : http://localhost:8081
+      `,
+    });
 
     await task.save();
 
