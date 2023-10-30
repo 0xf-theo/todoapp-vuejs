@@ -17,7 +17,7 @@ const listing = async (req, res, next) => {
   try {
     let filter = {};
 
-    filter.createdBy = req?.custom?._id;
+    filter.createdBy = req?.user?._id.toString();
 
     if (req.query.priority) {
       filter.priority = req.query.priority;
@@ -50,7 +50,7 @@ const detail = async (req, res, next) => {
 
     let data = await TaskModel.findById(id).exec();
 
-    if (data.createdBy?._id.toString() !== req?.custom?._id) {
+    if (data.createdBy?._id.toString() !== req?.user?._id.toString()) {
       throw new Error("You are not the owner of this task");
     }
 
@@ -70,7 +70,8 @@ const detail = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    req.body.createdBy = req?.user?._id;
+    req.body.createdBy = req?.user?._id.toString();
+    req.body.status = "todo";
 
     validator.validateSchema(taskSchema, req.body);
 
@@ -93,7 +94,7 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const id = req.params.id;
-    req.body.createdBy = req?.user?._id;
+    req.body.createdBy = req?.user?._id.toString();
 
     validator.validateSchema(taskSchema, req.body);
 
@@ -132,7 +133,7 @@ const destroy = async (req, res, next) => {
 
     let task = await TaskModel.findById(id).exec();
 
-    if (task.createdBy._id.toString() !== req?.user?._id) {
+    if (task.createdBy._id.toString() !== req?.user?._id.toString()) {
       throw new Error("You are not the owner of this task");
     }
 
