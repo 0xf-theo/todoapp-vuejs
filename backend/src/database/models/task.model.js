@@ -1,5 +1,7 @@
 "use strict";
 
+//structure de la table task, modèle à respecter
+
 const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
