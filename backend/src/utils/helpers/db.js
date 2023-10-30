@@ -1,5 +1,7 @@
 "use strict";
 
+//permet de créer la base de données
+
 const mongoose = require("mongoose");
 
 const connectDB = () => {
