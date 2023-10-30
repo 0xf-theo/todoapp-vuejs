@@ -94,7 +94,8 @@
             </td>
 
             <td class="p-3 text-sm whitespace-nowrap">
-              <button @click="shareTask(task)">Share</button>
+              <button @click="shareTask(task)" v-if="task.createdBy == user._id">Share</button>
+              <span v-if="task.createdBy != user._id">(Task shared)</span>
             </td>
             <td class="p-3 text-sm whitespace-nowrap">
               <a
@@ -104,7 +105,10 @@
                 Edit
               </a>
               <span class="mx-2">|</span>
-              <a @click="deleteTask(task._id)" class="text-red-500 cursor-pointer">
+              <a
+                @click="deleteTask(task._id)"
+                class="text-red-500 cursor-pointer"
+              >
                 Delete
               </a>
             </td>
@@ -158,32 +162,24 @@
                   Search for the users you want to share the task with:
                 </p>
 
-                <!-- Multi-select input for sharing with multiple users -->
-                <!-- <multiselect
-                  v-model="selectedUsers"
-                  :options="userOptions"
-                  label="name"
-                  Replace
-                  with
-                  your
-                  user
-                  object
-                  property
-                  containing
-                  names
-                  track-by="id"
-                  :multiple="true"
-                  :custom-label="customLabel"
-                  placeholder="Select users"
-                  @search-change="searchUsers"
-                ></multiselect> -->
-
                 <input
                   v-model="sharedWithEmail"
                   type="text"
                   class="w-full border p-2 rounded focus:outline-none focus:ring focus:border-blue-300"
                   placeholder="Enter email or username"
                 />
+
+                <div class="p-2">Shared with :</div>
+                <div class="p-2">
+                  <ul>
+                    <li
+                      v-for="(sharedEmail, index) in sharedTask.shares"
+                      :key="index"
+                    >
+                      {{ sharedEmail }}
+                    </li>
+                  </ul>
+                </div>
 
                 <!-- Action buttons -->
                 <div class="mt-4 flex justify-end">
@@ -230,6 +226,7 @@ export default {
       userOptions: [],
       selectedUsers: [],
       getLoader: false,
+      user: JSON.parse(localStorage.getItem("user")),
     };
   },
 
@@ -284,8 +281,23 @@ export default {
       this.showShareModal = true;
     },
 
-    shareTaskWithUser() {
+    shareTaskWithUsers() {
       this.showShareModal = false;
+
+      axios
+        .get(
+          `/api/task/share/${this.sharedTask._id}?email=${this.sharedWithEmail}`
+        )
+        .then((response) => {
+          alert("Shared !");
+          this.fetchData();
+        })
+        .catch((error) => {
+          console.error("API Error:", error);
+        })
+        .finally(() => {
+          this.saveLoader = false;
+        });
     },
 
     closeShareModal() {

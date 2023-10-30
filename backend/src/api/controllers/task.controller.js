@@ -1,23 +1,25 @@
 "use strict";
 
-//Ce code est un ensemble de fonctions qui gèrent les opérations CRUD (Create, Read, Update, Delete) 
+//Ce code est un ensemble de fonctions qui gèrent les opérations CRUD (Create, Read, Update, Delete)
 //pour les tâches (tasks) dans une application
 
 const validator = require("../../utils/helpers/validator");
 const { TaskModel } = require("../../database/models");
 const taskSchema = require("../../utils/schemas/task.schema");
 
-
-//Cette fonction gère la récupération des tâches. Elle prend en compte les filtres tels que la priorité et le statut 
-//pour renvoyer une liste de tâches correspondant à ces critères. 
-//Les tâches sont filtrées en fonction de l'utilisateur actuellement connecté, ce qui signifie qu'un utilisateur ne peut voir 
+//Cette fonction gère la récupération des tâches. Elle prend en compte les filtres tels que la priorité et le statut
+//pour renvoyer une liste de tâches correspondant à ces critères.
+//Les tâches sont filtrées en fonction de l'utilisateur actuellement connecté, ce qui signifie qu'un utilisateur ne peut voir
 //que ses propres tâches. Les résultats sont renvoyés au format JSON avec un message de succès.
 
 const listing = async (req, res, next) => {
   try {
-    let filter = {};
-
-    filter.createdBy = req?.user?._id.toString();
+    let filter = {
+      $or: [
+        { createdBy: req?.user?._id.toString() },
+        { shares: { $in: [req?.user?.email] } },
+      ],
+    };
 
     if (req.query.priority) {
       filter.priority = req.query.priority;
@@ -39,9 +41,9 @@ const listing = async (req, res, next) => {
   }
 };
 
-//Cette fonction récupère les détails d'une tâche spécifique en fonction de son identifiant (ID). 
-//Elle vérifie également si l'utilisateur actuellement connecté est le propriétaire de cette tâche. 
-//Si ce n'est pas le cas, une erreur est générée indiquant que l'utilisateur n'est pas autorisé à accéder à cette tâche. 
+//Cette fonction récupère les détails d'une tâche spécifique en fonction de son identifiant (ID).
+//Elle vérifie également si l'utilisateur actuellement connecté est le propriétaire de cette tâche.
+//Si ce n'est pas le cas, une erreur est générée indiquant que l'utilisateur n'est pas autorisé à accéder à cette tâche.
 //Les détails de la tâche sont renvoyés au format JSON en cas de succès.
 
 const detail = async (req, res, next) => {
@@ -50,7 +52,10 @@ const detail = async (req, res, next) => {
 
     let data = await TaskModel.findById(id).exec();
 
-    if (data.createdBy?._id.toString() !== req?.user?._id.toString()) {
+    if (
+      data.createdBy?._id.toString() !== req?.user?._id.toString() &&
+      !data.shares.includes(req?.user?.email)
+    ) {
       throw new Error("You are not the owner of this task");
     }
 
@@ -64,8 +69,8 @@ const detail = async (req, res, next) => {
   }
 };
 
-//Cette fonction crée une nouvelle tâche en utilisant les données fournies dans la requête. 
-//Elle associe également la tâche à l'utilisateur actuellement connecté en tant que créateur. 
+//Cette fonction crée une nouvelle tâche en utilisant les données fournies dans la requête.
+//Elle associe également la tâche à l'utilisateur actuellement connecté en tant que créateur.
 //Avant de créer la tâche, elle valide les données en utilisant un schéma de validation spécifique (taskSchema).
 
 const create = async (req, res, next) => {
@@ -87,9 +92,9 @@ const create = async (req, res, next) => {
   }
 };
 
-//Cette fonction met à jour les détails d'une tâche existante en fonction de son identifiant. 
-//Elle vérifie également si l'utilisateur actuellement connecté est le propriétaire de la tâche avant de permettre la mise à jour. 
-//Les détails de la tâche (titre, description, date d'échéance, priorité, sous-tâches) sont mis à jour avec les nouvelles données de la requête. 
+//Cette fonction met à jour les détails d'une tâche existante en fonction de son identifiant.
+//Elle vérifie également si l'utilisateur actuellement connecté est le propriétaire de la tâche avant de permettre la mise à jour.
+//Les détails de la tâche (titre, description, date d'échéance, priorité, sous-tâches) sont mis à jour avec les nouvelles données de la requête.
 
 const update = async (req, res, next) => {
   try {
@@ -100,7 +105,10 @@ const update = async (req, res, next) => {
 
     let task = await TaskModel.findById(id).exec();
 
-    if (task.createdBy?._id.toString() !== req.body.createdBy) {
+    if (
+      task.createdBy?._id.toString() !== req.body.createdBy &&
+      !task.shares.includes(req?.user?.email)
+    ) {
       throw new Error("You are not the owner of this task");
     }
 
@@ -123,8 +131,8 @@ const update = async (req, res, next) => {
   }
 };
 
-//Cette fonction supprime une tâche en fonction de son identifiant. 
-//Elle vérifie si l'utilisateur actuellement connecté est le propriétaire de la tâche avant de permettre la suppression. 
+//Cette fonction supprime une tâche en fonction de son identifiant.
+//Elle vérifie si l'utilisateur actuellement connecté est le propriétaire de la tâche avant de permettre la suppression.
 //En cas de succès, elle renvoie un message indiquant que la tâche a été supprimée.
 
 const destroy = async (req, res, next) => {
@@ -149,10 +157,36 @@ const destroy = async (req, res, next) => {
   }
 };
 
+const share = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    req.body.createdBy = req?.user?._id.toString();
+
+    let task = await TaskModel.findById(id).exec();
+
+    if (task.createdBy?._id.toString() !== req.body.createdBy) {
+      throw new Error("You are not the owner of this task");
+    }
+
+    task.shares.push(req.query.email);
+
+    await task.save();
+
+    return res.json({
+      status: true,
+      message: "Shared to user",
+      data: task,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   listing,
   detail,
   create,
   update,
   destroy,
+  share,
 };

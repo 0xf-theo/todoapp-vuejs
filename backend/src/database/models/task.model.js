@@ -10,7 +10,7 @@ const schema = new Schema(
   {
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
     },
     title: {
       type: String,
@@ -36,6 +36,7 @@ const schema = new Schema(
       enum: ["todo", "pending", "in-progress", "completed"],
       default: "pending",
     },
+    shares: [String],
   },
   { timestamps: true }
 );
