@@ -18,7 +18,7 @@
         >
       </li>
       <li class="mb-4">
-        <router-link to="/task" class="block px-4 py-2">Tasks</router-link>
+        <router-link to="/task" class="block px-4 py-2">Your Tasks</router-link>
       </li>
       <!-- <li>
         <router-link to="/dashboard/tasks/history" class="block px-4 py-2"
