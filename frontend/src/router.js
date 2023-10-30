@@ -32,6 +32,7 @@ const routes = [
     component: Layout,
     beforeEnter: requireLoggedIn,
     children: [
+      { path: "", component: TaskListing },
       { path: "task", component: TaskListing },
       { path: "task/add", component: AddEditTask },
       { path: "task/edit/:id", component: AddEditTask },
