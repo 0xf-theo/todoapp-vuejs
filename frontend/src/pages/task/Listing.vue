@@ -104,7 +104,7 @@
                 Edit
               </a>
               <span class="mx-2">|</span>
-              <a @click="deleteTask(index)" class="text-red-500 cursor-pointer">
+              <a @click="deleteTask(task._id)" class="text-red-500 cursor-pointer">
                 Delete
               </a>
             </td>
@@ -298,8 +298,17 @@ export default {
       console.log("Edit task:", id);
     },
 
-    deleteTask(index) {
-      console.log("Delete task at index:", index);
+    deleteTask(id) {
+      console.log("Delete task:", id);
+
+      axios
+        .delete(`http://localhost:8081/api/task/${id}`)
+        .then((response) => {
+          this.fetchData()
+        })
+        .catch((error) => {
+          console.error("API Error:", error);
+        });
     },
 
     changeStatus(task) {
