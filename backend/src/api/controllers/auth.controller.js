@@ -1,7 +1,6 @@
 "use strict";
 
-//Ce code est un ensemble de fonctions qui gèrent les opérations CRUD (Create, Read, Update, Delete)
-//pour les tâches (tasks) dans une application
+//Ce code gère l'authentification des utilisateurs dans une application
 
 const validator = require("../../utils/helpers/validator");
 const { UserModel } = require("../../database/models");
@@ -16,6 +15,8 @@ const signToken = (id) => {
   });
 };
 
+//Cette fonction permet aux utilisateurs de se connecter en vérifiant leur adresse e-mail et leur mot de passe. 
+//Si les informations sont correctes, un jeton JWT est créé, stocké dans un cookie, et les informations de l'utilisateur sont renvoyées.
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -74,6 +75,9 @@ const login = async (req, res) => {
   });
 };
 
+
+//Les utilisateurs peuvent s'inscrire en fournissant leur adresse e-mail, mot de passe et nom d'utilisateur. 
+//La fonction vérifie si un compte avec la même adresse e-mail existe déjà, puis crée un nouvel utilisateur en hachant le mot de passe. Les informations de l'utilisateur sont renvoyées en cas de succès.
 const register = async (req, res) => {
   const { email, password, username } = req.body;
 
@@ -125,6 +129,10 @@ const register = async (req, res) => {
       .json({ error: true, message: "Unable to save new user" });
   }
 };
+
+// Cette fonction gère l'authentification via Google en vérifiant un jeton d'identification Google fourni. 
+//Si l'utilisateur avec la même adresse e-mail n'existe pas, un nouveau compte utilisateur est créé. 
+//En fin de compte, un jeton JWT est généré, stocké dans un cookie, et les informations de l'utilisateur sont renvoyées.
 
 const google = async (req, res) => {
   const { credential } = req.body;
