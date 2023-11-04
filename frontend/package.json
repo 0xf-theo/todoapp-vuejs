@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@azure/msal-browser": "^3.4.0",
+    "@sentry/vite-plugin": "^2.9.0",
+    "@sentry/vue": "^7.77.0",
     "axios": "^1.6.0",
     "dotenv": "^16.3.1",
     "vue": "^3.3.4",
