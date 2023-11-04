@@ -8,6 +8,7 @@ const taskSchema = require("../../utils/schemas/task.schema");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { OAuth2Client } = require("google-auth-library");
+const fetch = require("node-fetch");
 
 const signToken = (id) => {
   return jwt.sign({ id }, "MY_SECRET_KEY", {
@@ -220,8 +221,99 @@ const google = async (req, res) => {
   }
 };
 
+const msal = async (req, res) => {
+  const { credential } = req.body;
+
+  if (credential === undefined || credential === "") {
+    return res.status(400).json({
+      error: true,
+      message: "Missing credential",
+    });
+  }
+
+  fetch("https://graph.microsoft.com/v1.0/me", {
+    headers: {
+      Authorization: "Bearer " + credential,
+      "Content-Type": "application/json",
+      Host: "graph.microsoft.com",
+    },
+  })
+    .then((response) => response.json())
+    .then(async (json) => {
+      const { displayName, mail } = json;
+
+      const entity = await UserModel.findOne({
+        mail,
+      });
+
+      if (!entity) {
+        try {
+          const a = await new UserModel({
+            picture: null,
+            password: null,
+            email: mail,
+            username: displayName,
+            type: "microsoft",
+          }).save();
+
+          const token = signToken(a.id);
+
+          const cookieOptions = {
+            expires: new Date(
+              Date.now() + parseInt(3600000n, 10) * 24 * 60 * 60 * 1000
+            ),
+            httpOnly: true,
+          };
+
+          if (process.env.NODE_ENV === "production")
+            cookieOptions.secure = true;
+
+          res.cookie("jwt", token, cookieOptions);
+
+          return res.json({
+            user: {
+              ...JSON.parse(JSON.stringify(a)),
+              token,
+            },
+          });
+        } catch (e) {
+          console.log(e);
+          return res
+            .status(500)
+            .json({ error: true, message: "Unable to save new user" });
+        }
+      } else if (entity && entity.type == "microsoft") {
+        const token = signToken(entity.id);
+
+        const cookieOptions = {
+          expires: new Date(
+            Date.now() + parseInt(3600000n, 10) * 24 * 60 * 60 * 1000
+          ),
+          httpOnly: true,
+        };
+
+        if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+
+        res.cookie("jwt", token, cookieOptions);
+
+        return res.json({
+          user: {
+            ...JSON.parse(JSON.stringify(entity)),
+            token,
+          },
+        });
+      } else {
+        return res.status(500).json({
+          error: true,
+          message: "Unable to save login to that user, not a google account",
+        });
+      }
+    });
+};
+
 module.exports = {
   login,
   register,
   google,
+  msal,
 };

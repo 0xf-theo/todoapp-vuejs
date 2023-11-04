@@ -23,7 +23,7 @@ const schema = new Schema(
     type: {
       type: String,
       required: true,
-      enum: ["local", "google"],
+      enum: ["local", "google", "microsoft"],
     },
   },
   { timestamps: true }

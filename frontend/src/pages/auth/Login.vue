@@ -69,6 +69,20 @@
         <GoogleLogin :callback="callback" />
       </div>
 
+      <div class="flex justify-center pt-2 w-100">
+        <button
+          @click="msLogin"
+          class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+          style="width: 250px"
+        >
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+            style="width: 20px; margin-right: 5px"
+          />
+          <span>Microsoft</span>
+        </button>
+      </div>
+
       <div class="flex justify-center p-6">
         <small
           ><a href="/register"
@@ -83,6 +97,7 @@
 <script>
 import axios from "../../api";
 import { decodeCredential } from "vue3-google-login";
+import { signInAndGetUser } from "../../microsoftGraph";
 
 export default {
   name: "Login",
@@ -117,6 +132,32 @@ export default {
           }
         })
         .finally(() => {});
+    },
+
+    msLogin() {
+      signInAndGetUser().then((auth) => {
+        axios
+          .post(`/api/auth/msal`, {
+            credential: auth.accessToken,
+          })
+          .then((response) => {
+            const resData = response.data;
+            if (resData.user) {
+              localStorage.setItem("user", JSON.stringify(resData.user));
+              localStorage.setItem("token", resData.user.token);
+              this.$router.push("/");
+            } else {
+              this.error = error.response.data.message;
+            }
+          })
+          .catch((error) => {
+            console.error("API Error:", error);
+            if (error.response.data.error) {
+              this.error = error.response.data.message;
+            }
+          })
+          .finally(() => {});
+      });
     },
 
     submitForm() {
