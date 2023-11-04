@@ -21,6 +21,9 @@
         <router-link to="/task" class="block px-4 py-2">Your Tasks</router-link>
       </li>
       <li class="mb-4">
+        <router-link to="/history" class="block px-4 py-2">Tasks History</router-link>
+      </li>
+      <li class="mb-4">
         <a @click.prevent="logout" class="block px-4 py-2">Logout</a>
       </li>
 

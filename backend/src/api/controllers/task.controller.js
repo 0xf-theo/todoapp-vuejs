@@ -120,6 +120,10 @@ const update = async (req, res, next) => {
     task.subtasks = req.body.subtasks;
     task.status = req.body.status;
 
+    if(task.status == "completed") {
+      task.completedDate = Date.now()
+    }
+
     await task.save();
 
     return res.json({

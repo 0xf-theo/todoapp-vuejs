@@ -13,6 +13,7 @@ const taskSchema = joi.object({
   priority: joi.string().max(50).required(),
   description: joi.string().max(500).required(),
   dueDate: joi.date().required(),
+  completedDate: joi.date(),
   status: joi.string(),
   subtasks: joi.array().items(joi.string()).required(),
 });

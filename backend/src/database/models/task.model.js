@@ -24,6 +24,10 @@ const schema = new Schema(
       type: Date,
       required: true,
     },
+    completedDate: {
+      type: Date,
+      required: false,
+    },
     subtasks: [String],
     priority: {
       type: String,

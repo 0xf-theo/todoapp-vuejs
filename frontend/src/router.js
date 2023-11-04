@@ -10,6 +10,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "./pages/auth/Login.vue";
 import AddEditTask from "./pages/task/AddEditTask.vue";
 import TaskListing from "./pages/task/Listing.vue";
+import TaskHistory from "./pages/task/TaskHistory.vue";
 import Layout from "./components/layout/Layout.vue";
 import Register from "./pages/auth/Register.vue";
 
@@ -36,6 +37,7 @@ const routes = [
       { path: "task", component: TaskListing },
       { path: "task/add", component: AddEditTask },
       { path: "task/edit/:id", component: AddEditTask },
+      { path: "history", component: TaskHistory },
       // { path: "task/history", component: TaskHistory },
     ],
   },
