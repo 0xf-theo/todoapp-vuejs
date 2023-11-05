@@ -43,3 +43,5 @@ Then
 
 - Send emails with your backend. ✅
 
+- Error reporting with "SENTRY. ✅
+
