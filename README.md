@@ -5,9 +5,9 @@
 
 ## Authors
 
-- VILLANO Théo
-- CANTRELLE Noa
-- LUCET Aymeric
+- V. Théo
+- C. Noa
+- L. Aymeric
 ## 🛠 Backend Launch Steps
 Create mongoDB Database in your local database with name task-management-system
 
